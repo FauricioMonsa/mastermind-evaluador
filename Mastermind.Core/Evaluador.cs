@@ -1,12 +1,21 @@
+using System.Globalization;
+
 namespace Mastermind.Core;
 
 public sealed class Evaluador
 {
     private readonly ConfiguracionColores _configuracion;
+    private readonly ILogEvaluaciones _logEvaluaciones;
+    private readonly TimeProvider _timeProvider;
 
-    public Evaluador(ConfiguracionColores? configuracion = null)
+    public Evaluador(
+        ConfiguracionColores? configuracion = null,
+        ILogEvaluaciones? logEvaluaciones = null,
+        TimeProvider? timeProvider = null)
     {
         _configuracion = configuracion ?? new ConfiguracionColores();
+        _logEvaluaciones = logEvaluaciones ?? new LogEvaluacionesConsola();
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     public ResultadoEvaluacion EvaluarIntento(string patronSecreto, string intentoJugador)
@@ -59,7 +68,18 @@ public sealed class Evaluador
             }
         }
 
-        return new ResultadoEvaluacion(bienPosicionados, coloresCorrectos);
+        var resultado = new ResultadoEvaluacion(bienPosicionados, coloresCorrectos);
+        var mensaje = string.Format(
+            CultureInfo.InvariantCulture,
+            "En la fecha {0:dd-MM-yyyy HH:mm:ss} se evaluó el intento {1} contra el patrón {2}. Resultado: {3} bien posicionados – {4} con color correcto.",
+            _timeProvider.GetLocalNow(),
+            intentoJugador,
+            patronSecreto,
+            resultado.BienPosicionados,
+            resultado.ColorCorrecto);
+
+        _logEvaluaciones.Registrar(mensaje);
+        return resultado;
     }
 
     private static void ValidarNoVacio(string? codigo, string parametro, string nombre)
