@@ -7,6 +7,8 @@ public class EvaluadorCheatTests
     [Fact]
     public void EvaluarIntento_CodigoValido_RevelaColorEnPosicionAleatoria()
     {
+        const int semilla = 173;
+        var indiceEsperado = new Random(semilla).Next(4);
         var ruta = CrearArchivo("""
             [{ "hash": "codigo-valido", "usosDisponibles": 2 }]
             """);
@@ -14,13 +16,13 @@ public class EvaluadorCheatTests
         try
         {
             var gestor = new GestorCodigosTrampa(ruta);
-            var evaluador = CrearEvaluador(gestor, new RandomFijo(1));
+            var evaluador = CrearEvaluador(gestor, new Random(semilla));
 
-            var resultado = evaluador.EvaluarIntento("1234", "1424", "codigo-valido");
+            var resultado = evaluador.EvaluarIntento("1234", "4321", "codigo-valido");
 
-            Assert.Equal(new ResultadoEvaluacion(2, 1, true, 2, '2'), resultado);
-            Assert.Equal(2, resultado.PosicionRevelada);
-            Assert.Equal('2', resultado.ColorRevelado);
+            Assert.Equal(new ResultadoEvaluacion(0, 4, true, indiceEsperado + 1, "1234"[indiceEsperado]), resultado);
+            Assert.Equal(indiceEsperado + 1, resultado.PosicionRevelada);
+            Assert.Equal("1234"[indiceEsperado], resultado.ColorRevelado);
             Assert.Null(resultado.MensajeTrampa);
             Assert.Equal(1, gestor.ConsultarUsosDisponibles("codigo-valido"));
         }
@@ -43,7 +45,7 @@ public class EvaluadorCheatTests
         try
         {
             var gestor = new GestorCodigosTrampa(ruta);
-            var evaluador = CrearEvaluador(gestor, new RandomFijo(0));
+            var evaluador = CrearEvaluador(gestor, new Random(173));
 
             var primerResultado = evaluador.EvaluarIntento("1234", "1234", "codigo-usado");
             var segundoResultado = evaluador.EvaluarIntento("1234", "1234", "otro-codigo");
@@ -79,7 +81,7 @@ public class EvaluadorCheatTests
         try
         {
             var gestor = new GestorCodigosTrampa(ruta);
-            var evaluador = CrearEvaluador(gestor, new RandomFijo(0));
+            var evaluador = CrearEvaluador(gestor, new Random(173));
 
             var resultadoInvalido = evaluador.EvaluarIntento("1234", "4321", cheatCode);
             var resultadoValido = evaluador.EvaluarIntento("1234", "4321", "disponible");
@@ -116,17 +118,5 @@ public class EvaluadorCheatTests
         public void Registrar(string mensaje)
         {
         }
-    }
-
-    private sealed class RandomFijo : Random
-    {
-        private readonly int _indice;
-
-        public RandomFijo(int indice)
-        {
-            _indice = indice;
-        }
-
-        public override int Next(int maxValue) => _indice;
     }
 }

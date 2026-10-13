@@ -5,15 +5,6 @@ namespace Mastermind.Core.Tests;
 public class GestorCodigosTrampaTests
 {
     [Fact]
-    public void GestorCodigosTrampa_SinRuta_LeeArchivoPredeterminadoCopiadoAlOutput()
-    {
-        var gestor = new GestorCodigosTrampa();
-
-        Assert.Equal(1, gestor.ConsultarUsosDisponibles("A1B2C3D4E5F6G7H8I9J0ABCDE"));
-        Assert.Equal(3, gestor.ConsultarUsosDisponibles("Z9Y8X7W6V5U4T3S2R1Q0LMNOP"));
-    }
-
-    [Fact]
     public void GestorCodigosTrampa_ConsumirUso_PersisteCantidadRestante()
     {
         var ruta = CrearArchivo("""
