@@ -1,0 +1,76 @@
+﻿@model EvaluacionViewModel
+@{
+    ViewData["Title"] = "Mastermind";
+}
+
+<section class="mastermind-shell">
+    <header class="page-heading">
+        <p class="eyebrow">Evaluador</p>
+        <h1>Mastermind</h1>
+    </header>
+
+    <div class="workspace">
+        <form asp-action="Index" method="post" class="guess-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+
+            <div class="field-group">
+                <label for="patronSecreto">Patrón secreto</label>
+                <input id="patronSecreto" name="patronSecreto" value="@Model.PatronSecreto" autocomplete="off" spellcheck="false" />
+                <span asp-validation-for="PatronSecreto" class="field-error"></span>
+            </div>
+
+            <div class="field-group">
+                <label for="intentoJugador">Intento del jugador</label>
+                <input id="intentoJugador" name="intentoJugador" value="@Model.IntentoJugador" autocomplete="off" spellcheck="false" />
+                <span asp-validation-for="IntentoJugador" class="field-error"></span>
+            </div>
+
+            <div class="field-group">
+                <label for="cheatCode">Código de ayuda <span>(opcional)</span></label>
+                <input id="cheatCode" name="cheatCode" value="@Model.CheatCode" autocomplete="off" />
+            </div>
+
+            <button type="submit">Evaluar intento <span aria-hidden="true">→</span></button>
+        </form>
+
+        @if (Model.Resultado is not null)
+        {
+            <section class="result-panel" aria-live="polite">
+                <p class="eyebrow">Resultado</p>
+                <dl class="score-list">
+                    <div>
+                        <dt>Bien posicionados</dt>
+                        <dd>@Model.Resultado.BienPosicionados</dd>
+                    </div>
+                    <div>
+                        <dt>Color correcto</dt>
+                        <dd>@Model.Resultado.ColorCorrecto</dd>
+                    </div>
+                </dl>
+
+                @if (Model.Resultado.CodigoTrampaValido is not null)
+                {
+                    <div class="cheat-result">
+                        @if (Model.Resultado.CodigoTrampaValido == true)
+                        {
+                            <h2>Ayuda</h2>
+                            @if (Model.Resultado.MensajeTrampa is not null)
+                            {
+                                <p>@Model.Resultado.MensajeTrampa</p>
+                            }
+                            else
+                            {
+                                <p>Posición @Model.Resultado.PosicionRevelada: color @Model.Resultado.ColorRevelado</p>
+                            }
+                        }
+                        else
+                        {
+                            <p>@Model.Resultado.MensajeTrampa</p>
+                        }
+                    </div>
+                }
+            </section>
+        }
+    </div>
+</div>
