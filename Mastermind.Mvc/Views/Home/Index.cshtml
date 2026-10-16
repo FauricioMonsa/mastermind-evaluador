@@ -7,6 +7,10 @@
     <header class="page-heading">
         <p class="eyebrow">Evaluador</p>
         <h1>Mastermind</h1>
+        <form asp-action="NuevaPartida" method="post" class="new-game-form">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="new-game-button">Nueva partida</button>
+        </form>
     </header>
 
     <div class="workspace">

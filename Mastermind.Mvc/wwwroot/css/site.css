@@ -29,6 +29,9 @@ body {
 .page-heading { margin-bottom: 32px; }
 .eyebrow { margin: 0 0 8px; color: var(--accent-dark); font-size: .78rem; font-weight: 700; text-transform: uppercase; }
 h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 2.6rem; font-weight: 500; }
+.new-game-form { margin-top: 16px; }
+.new-game-button { display: inline-flex; min-height: 38px; background: transparent; color: var(--accent-dark); border: 1px solid var(--accent); }
+.new-game-button:hover { background: var(--accent); color: white; }
 
 .workspace {
   display: grid;
